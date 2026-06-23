@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { Video, FolderOpen } from "@lucide/vue";
+import { startDrag } from "@crabnebula/tauri-plugin-drag";
 import { useVideoStore } from "../stores/videoStore";
 import type { VideoFile } from "../types";
 
@@ -28,20 +29,19 @@ function fileName(path: string) {
   return path.split(/[\\/]/).pop() ?? path;
 }
 
-function onDragStart(e: DragEvent) {
+async function onMouseDown() {
   if (!batchPaths.value.length) return;
   dragging.value = true;
-  if (e.dataTransfer) {
-    e.dataTransfer.effectAllowed = "copy";
-    const uriList = batchPaths.value.map((p) => `file://${p}`).join("\r\n");
-    e.dataTransfer.setData("text/uri-list", uriList);
-    e.dataTransfer.setData("text/plain", batchPaths.value.join("\n"));
+  try {
+    await startDrag({
+      item: batchPaths.value,
+      icon: "icons/icon.png",
+    });
+    // drag completed — refresh batch
+    store.refreshBatch();
+  } finally {
+    dragging.value = false;
   }
-}
-
-function onDragEnd() {
-  dragging.value = false;
-  store.refreshBatch();
 }
 </script>
 
@@ -56,13 +56,11 @@ function onDragEnd() {
 
   <div
     v-else
-    :draggable="batchPaths.length > 0"
-    @dragstart="onDragStart"
-    @dragend="onDragEnd"
+    @mousedown="onMouseDown"
     :class="[
       'flex flex-wrap gap-2 rounded-xl border-2 p-2 cursor-grab transition-all duration-100 h-full content-start',
       dragging
-        ? 'border-blue-400 bg-blue-950/20 scale-[0.98] opacity-70'
+        ? 'border-blue-400 bg-blue-950/20 opacity-70'
         : 'border-gray-700 hover:border-blue-500',
     ]"
   >
