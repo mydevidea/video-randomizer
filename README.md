@@ -1,4 +1,4 @@
-# Video Randomizer
+# RanDrop
 
 A fast desktop tool for bulk-uploading videos to Facebook or other platforms via drag & drop.
 
