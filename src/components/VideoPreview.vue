@@ -37,8 +37,6 @@ async function onMouseDown() {
       item: batchPaths.value,
       icon: "icons/icon.png",
     });
-    // drag completed — refresh batch
-    store.refreshBatch();
   } finally {
     dragging.value = false;
   }

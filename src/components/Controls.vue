@@ -13,7 +13,7 @@ const firstPath = () => store.videoPaths[store.batch[0]] ?? null;
       :disabled="!store.total"
       class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors font-semibold"
     >
-      <Shuffle :size="15" /> Refresh All
+      <Shuffle :size="15" /> Refresh
     </button>
     <button
       @click="store.openFolder(firstPath()!)"
